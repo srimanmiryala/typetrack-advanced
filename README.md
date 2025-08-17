@@ -19,7 +19,7 @@ Designed for typists, developers, and productivity enthusiasts who want to track
 
 | Layer      | Technology                  |
 |------------|-----------------------------|
-| Frontend   | HTML5, CSS3, Vanilla JS     |
+| Frontend   | HTML5, CSS3, JS     |
 | Backend    | Python Flask, REST API      |
 | Database   | MongoDB                    |
 | Deployment | Local / Docker / Cloud-ready|
