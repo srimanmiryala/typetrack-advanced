@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TypeTrack Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 560px;
+      margin: 40px auto;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 36px 32px 32px 32px;
+    }
+    h1 {
+      color: #4285f4;
+      text-align: center;
+      margin-bottom: 18px;
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+    h2, h3 {
+      color: #385898;
+      margin-top: 28px;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+    label {
+      font-size: 1.07rem;
+      margin-top: 16px;
+      display: block;
+    }
+    input, button, select, textarea {
+      padding: 11px 10px;
+      margin-top: 3px;
+      border-radius: 7px;
+      border: 1px solid #dde1e6;
+      display: block;
+      font-size: 1.07rem;
+      outline: none;
+      width: 100%;
+      transition: border-color .1s;
+      margin-bottom: 16px;
+      background: #f8fafc;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #4285f4;
+    }
+    button {
+      background: #4285f4;
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      transition: background .2s;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 0;
+    }
+    button:disabled {
+      background: #b6c2dd;
+      cursor: not-allowed;
+    }
+    nav {
+      margin-bottom: 26px;
+      text-align: center;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: #4285f4;
+      font-weight: 700;
+      margin: 0 8px;
+      font-size: 1.1rem;
+      padding: 9px 0;
+      border-bottom: 2px solid transparent;
+      transition: border-bottom .2s, color .15s;
+      cursor: pointer;
+    }
+    nav button.active {
+      color: #385898;
+      border-bottom: 2.5px solid #4285f4;
+      background: none;
+    }
+    .hidden {
+      display: none;
+    }
+    .message {
+      margin: 12px 0 20px 0;
+      padding: 10px 14px;
+      background: #ecf5ff;
+      border-radius: 6px;
+      color: #2596be;
+      font-size: 1.1rem;
+    }
+    .error {
+      background: #faeaea;
+      color: #d83030;
+      border: 1px solid #d83030;
+    }
+    #promptText {
+      background: #f4f8ff;
+      border-radius: 7px;
+      padding: 14px;
+      font-size: 1.17rem;
+      margin-bottom: 12px;
+      min-height: 80px;
+      border: 1px solid #dde1e6;
+      color: #444d56;
+    }
+    #typingArea {
+      font-size: 18px;
+      min-height: 90px;
+      border: 1.3px solid #dde1e6;
+      padding: 12px;
+      white-space: pre-wrap;
+      margin-bottom: 6px;
+    }
+    #testResults {
+      padding: 13px 8px;
+      border-radius: 7px;
+      background: #f8fafc;
+      color: #1c7aa3;
+      font-weight: 600;
+      margin-top: 18px;
+    }
+    table {
+      border-radius: 9px;
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+      border: 1px solid #dde1e6;
+      overflow: hidden;
+      background: #fcfcfd;
+    }
+    th, td {
+      text-align: left;
+      border: none;
+      padding: 10px 10px;
+      font-size: 1rem;
+      color: #383c42;
+    }
+    th {
+      background: #f4f8ff;
+      font-weight: 700;
+      color: #4285f4;
+    }
+    tr:nth-child(even) { background: #f6f6fa; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>TypeTrack Pro</h1>
+  <div id="messages" class="message"></div>
+
+  <nav>
+    <button id="navRegister">Register</button>
+    <button id="navLogin">Login</button>
+    <button id="navTyping" class="hidden">Typing Test</button>
+    <button id="navAnalytics" class="hidden">Analytics</button>
+    <button id="navLeaderboard" class="hidden">Leaderboard</button>
+    <button id="navLogout" class="hidden" style="float:right">Logout</button>
+  </nav>
+
+  <div id="regSection">
+    <h2>Register</h2>
+    <label>Username</label>
+    <input type="text" id="regUsername" />
+    <label>Email</label>
+    <input type="email" id="regEmail" />
+    <label>Password</label>
+    <input type="password" id="regPassword" />
+    <button id="regBtn">Register</button>
+  </div>
+
+  <div id="loginSection" class="hidden">
+    <h2>Login</h2>
+    <label>Username</label>
+    <input type="text" id="loginUsername" />
+    <label>Password</label>
+    <input type="password" id="loginPassword" />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div id="typingTestSection" class="hidden">
+    <h2>Typing Test</h2>
+    <label>Prompt Difficulty</label>
+    <select id="difficultySelect">
+      <option value="easy">Easy</option>
+      <option value="medium" selected>Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <button id="startTestBtn">Start Test</button>
+    <div id="promptText"></div>
+    <textarea id="typingArea" placeholder="Start typing here..." disabled></textarea>
+    <div id="testResults" class="hidden">
+      <h3>Results</h3>
+      <p>WPM: <span id="wpmResult"></span></p>
+      <p>Accuracy: <span id="accuracyResult"></span>%</p>
+      <button id="submitTestBtn">Submit Results</button>
+    </div>
+  </div>
+
+  <div id="analyticsSection" class="hidden">
+    <h2>Your Analytics</h2>
+    <p>Total Tests: <span id="totalTests"></span></p>
+    <p>Average WPM: <span id="averageWpm"></span></p>
+    <p>Average Accuracy: <span id="averageAccuracy"></span>%</p>
+    <p>Best WPM: <span id="bestWpm"></span></p>
+    <p>Best Accuracy: <span id="bestAccuracy"></span>%</p>
+  </div>
+
+  <div id="leaderboardSection" class="hidden">
+    <h2>Global Leaderboard</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Best WPM</th>
+          <th>Best Accuracy</th>
+          <th>Total Tests</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:5001/api';
+let currentUser = null, currentToken = null, currentTest = null, testStartTime = null, promptText = '';
+
+function showMessage(msg, isError = false) {
+  const messages = document.getElementById('messages');
+  messages.innerHTML = msg ? `<span ${isError? 'class=\"error\"' : ''}>${msg}</span>` : '';
+}
+function setActiveNav(buttonId) {
+  ['navRegister','navLogin','navTyping','navAnalytics','navLeaderboard','navLogout'].forEach(id=>{
+    document.getElementById(id).classList.remove('active');
+  });
+  if(buttonId){document.getElementById(buttonId).classList.add('active');}
+}
+function showSections(sectionsToShow) {
+  ['regSection','loginSection','typingTestSection','analyticsSection','leaderboardSection']
+    .forEach(id=>document.getElementById(id).classList.toggle('hidden',!sectionsToShow.includes(id)));
+  // Nav visibility based on login status
+  let loggedIn = currentUser !== null;
+  document.getElementById('navRegister').classList.toggle('hidden',loggedIn);
+  document.getElementById('navLogin').classList.toggle('hidden',loggedIn);
+  ['navTyping','navAnalytics','navLeaderboard','navLogout'].forEach(id=>{
+    document.getElementById(id).classList.toggle('hidden',!loggedIn);
+  });
+}
+function logout(){
+  currentUser=null; currentToken=null; currentTest=null; testStartTime=null; promptText='';
+  showMessage('Logged out');
+  setActiveNav('navLogin');
+  showSections(['loginSection']);
+}
+document.getElementById('navRegister').onclick = () => {
+  setActiveNav('navRegister'); showSections(['regSection']); showMessage('');
+};
+document.getElementById('navLogin').onclick = () => {
+  setActiveNav('navLogin'); showSections(['loginSection']); showMessage('');
+};
+document.getElementById('navTyping').onclick = () => {
+  setActiveNav('navTyping'); showSections(['typingTestSection']); showMessage('');
+};
+document.getElementById('navAnalytics').onclick = () => {
+  setActiveNav('navAnalytics'); showSections(['analyticsSection']); loadAnalytics(); showMessage('');
+};
+document.getElementById('navLeaderboard').onclick = () => {
+  setActiveNav('navLeaderboard'); showSections(['leaderboardSection']); loadLeaderboard(); showMessage('');
+};
+document.getElementById('navLogout').onclick = () => { logout(); };
+
+document.getElementById('regBtn').onclick = async () => {
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!username || !email || !password) {
+    showMessage('All registration fields required', true); return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/register`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
+    const data = await res.json();
+    if (res.status===201) {
+      showMessage('Registration successful! Please login.');
+      setActiveNav('navLogin');
+      showSections(['loginSection']);
+    } else { showMessage(data.message||'Registration failed',true);}
+  } catch { showMessage('Network error during registration',true);}
+};
+
+document.getElementById('loginBtn').onclick = async () => {
+  const username=document.getElementById('loginUsername').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  if(!username||!password){ showMessage('Username and password required',true); return;}
+  try{
+    const res=await fetch(`${API_BASE}/login`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username,password})
+    });
+    const data=await res.json();
+    if(res.status===200){
+      currentUser=data.user; currentToken=data.token;
+      showMessage(`Logged in as ${currentUser.username}`);
+      setActiveNav('navTyping');
+      showSections(['typingTestSection']);
+      loadLeaderboard(); loadAnalytics();
+    }else{ showMessage(data.message||'Login failed',true);}
+  }catch{ showMessage('Network error during login',true);}
+};
+
+document.getElementById('startTestBtn').onclick = async () => {
+  const difficulty=document.getElementById('difficultySelect').value;
+  try{
+    const res=await fetch(`${API_BASE}/prompt?difficulty=${difficulty}`);
+    const data=await res.json();
+    promptText=data.prompt;
+    document.getElementById('promptText').textContent=promptText;
+    document.getElementById('typingArea').value='';
+    document.getElementById('typingArea').disabled=false;
+    document.getElementById('typingArea').focus();
+    document.getElementById('testResults').classList.add('hidden');
+    testStartTime=Date.now(); currentTest=null;
+  }catch{ showMessage('Failed to load prompt',true);}
+};
+
+document.getElementById('typingArea').addEventListener('input', () => {
+  const typed=document.getElementById('typingArea').value;
+  if(!typed||!promptText)return;
+  const elapsedMinutes=(Date.now()-testStartTime)/(1000*60);
+  const wordsTyped=typed.trim()?typed.trim().split(/\s+/).length:0;
+  const wpm=Math.round(wordsTyped/elapsedMinutes);
+  let correctChars=0;
+  for(let i=0;i<typed.length;i++){ if(typed[i]===promptText[i])correctChars++;}
+  const accuracy=Math.round((correctChars/promptText.length)*100);
+  document.getElementById('wpmResult').textContent=wpm;
+  document.getElementById('accuracyResult').textContent=accuracy;
+  currentTest={wpm,accuracy};
+  document.getElementById('testResults').classList.remove('hidden');
+});
+
+document.getElementById('submitTestBtn').onclick = async () => {
+  if(!currentTest){ showMessage('Start the test first',true); return;}
+  try{
+    const res=await fetch(`${API_BASE}/submit`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${currentToken}`},
+      body:JSON.stringify({
+        wpm:currentTest.wpm,
+        accuracy:currentTest.accuracy,
+        difficulty:document.getElementById('difficultySelect').value,
+        time_taken:(Date.now()-testStartTime)/1000 })
+    });
+    const data=await res.json();
+    if(res.ok){
+      showMessage('Test results submitted successfully');
+      loadAnalytics(); loadLeaderboard();
+      document.getElementById('testResults').classList.add('hidden');
+      document.getElementById('typingArea').disabled=true;
+      currentTest=null;
+    } else { showMessage(data.message||'Failed to submit results',true);}
+  }catch{ showMessage('Network error while submitting results',true);}
+};
+
+async function loadAnalytics() {
+  try{
+    const res=await fetch(`${API_BASE}/analytics`,{headers:{'Authorization':`Bearer ${currentToken}`}});
+    const data=await res.json();
+    if(res.ok){
+      setActiveNav('navAnalytics');
+      showSections(['analyticsSection']);
+      document.getElementById('totalTests').textContent=data.total_sessions||0;
+      document.getElementById('averageWpm').textContent=data.average_wpm||0;
+      document.getElementById('averageAccuracy').textContent=data.average_accuracy||0;
+      document.getElementById('bestWpm').textContent=data.best_wpm||0;
+      document.getElementById('bestAccuracy').textContent=data.best_accuracy||0;
+    } else { showMessage(data.message||'Failed to load analytics',true);}
+  }catch{ showMessage('Network error while loading analytics',true);}
+}
+
+async function loadLeaderboard() {
+  try{
+    const res = await fetch(`${API_BASE}/leaderboard`);
+    const data = await res.json();
+    if(res.ok){
+      setActiveNav('navLeaderboard');
+      showSections(['leaderboardSection']);
+      const tbody=document.getElementById('leaderboardBody');
+      tbody.innerHTML='';
+      data.leaderboard.forEach(entry=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${entry.rank}</td><td>${entry.username}</td><td>${entry.best_wpm}</td><td>${entry.best_accuracy}</td><td>${entry.total_tests}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else { showMessage('Failed to load leaderboard',true);}
+  }catch{ showMessage('Network error while loading leaderboard',true);}
+}
+
+window.onload = () => {
+  setActiveNav('navRegister');
+  showSections(['regSection']);
+  showMessage('');
+};
+</script>
+
+</body>
+</html>
+
