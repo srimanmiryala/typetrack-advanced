@@ -67,7 +67,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guidelines.
 
 ## 📫 Contact & Support
 
-Created by **Your Name** - email: srimanmiryala369@gmail.com
+Created by **Sriman Miryala** - email: srimanmiryala369@gmail.com
 Follow on [GitHub](https://github.com/srimanmiryala) | [LinkedIn](https://linkedin.com/in/srimanmiryala)
 
 ---
